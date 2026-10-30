@@ -207,6 +207,7 @@ footer a{color:var(--plum);font-weight:800}
    <div class="f2">
     <label class="f">الاسم الكامل<input name="name" autocomplete="name" required></label>
     <label class="f">رقم الهاتف (واتساب)<input name="phone" inputmode="tel" autocomplete="tel" placeholder="05xx xx xx xx" required></label>
+    <label class="f">البريد الإلكتروني<input name="email" type="email" inputmode="email" autocomplete="email" placeholder="name@gmail.com" dir="ltr" required></label>
     <label class="f">الولاية<select name="wilaya" required><option value="">اختاري ولايتك</option><option>أدرار</option><option>الشلف</option><option>الأغواط</option><option>أم البواقي</option><option>باتنة</option><option>بجاية</option><option>بسكرة</option><option>بشار</option><option>البليدة</option><option>البويرة</option><option>تمنراست</option><option>تبسة</option><option>تلمسان</option><option>تيارت</option><option>تيزي وزو</option><option>الجزائر</option><option>الجلفة</option><option>جيجل</option><option>سطيف</option><option>سعيدة</option><option>سكيكدة</option><option>سيدي بلعباس</option><option>عنابة</option><option>قالمة</option><option>قسنطينة</option><option>المدية</option><option>مستغانم</option><option>المسيلة</option><option>معسكر</option><option>ورقلة</option><option>وهران</option><option>البيض</option><option>إليزي</option><option>برج بوعريريج</option><option>بومرداس</option><option>الطارف</option><option>تندوف</option><option>تيسمسيلت</option><option>الوادي</option><option>خنشلة</option><option>سوق أهراس</option><option>تيبازة</option><option>ميلة</option><option>عين الدفلى</option><option>النعامة</option><option>عين تموشنت</option><option>غرداية</option><option>غليزان</option><option>تيميمون</option><option>برج باجي مختار</option><option>أولاد جلال</option><option>بني عباس</option><option>عين صالح</option><option>عين قزام</option><option>تقرت</option><option>جانت</option><option>المغير</option><option>المنيعة</option></select></label>
     <label class="f">البلدية / العنوان للتوصيل<input name="address" autocomplete="street-address" required></label>
    </div>
@@ -245,11 +246,12 @@ footer a{color:var(--plum);font-weight:800}
  function show(t,k){msg.className='msg '+k;msg.textContent=t}
  f.addEventListener('submit',function(e){
   e.preventDefault();
-  var d=new FormData(f),name=(d.get('name')||'').trim(),ph=(d.get('phone')||'').replace(/[\s.\-]/g,'');
+  var d=new FormData(f),em=(d.get('email')||'').trim(),name=(d.get('name')||'').trim(),ph=(d.get('phone')||'').replace(/[\s.\-]/g,'');
   if(!name||!/^(0|\+?213)?[5-7]\d{8}$/.test(ph)){show('يرجى إدخال الاسم ورقم هاتف جزائري صحيح','err');return}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){show('يرجى كتابة بريد إلكتروني صحيح','err');return}
   if(!d.get('wilaya')||!(d.get('address')||'').trim()){show('يرجى اختيار الولاية وكتابة العنوان','err');return}
   var c=chosen();if(c.length!==3){show('اختاري 3 دورات بالضبط من باقة التمكين','err');return}
-  var p=new URLSearchParams({name:name,phone:ph,wilaya:d.get('wilaya'),address:d.get('address').trim(),courses:c.map(function(x){return x.value}).join(' | '),offer:'تجلي-10000',page:location.href});
+  var p=new URLSearchParams({name:name,phone:ph,email:em,wilaya:d.get('wilaya'),address:d.get('address').trim(),courses:c.map(function(x){return x.value}).join(' | '),offer:'تجلي-10000',page:location.href});
   if(!HOOK){show('هذه نسخة معاينة: لم يُرسل أي شيء بعد. سيُفعَّل الاستقبال قبل النشر.','ok');return}
   var b=document.getElementById('go');b.disabled=true;
   fetch(HOOK,{method:'POST',mode:'no-cors',body:p}).then(function(){
